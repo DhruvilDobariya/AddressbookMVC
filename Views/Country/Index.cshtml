@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Country>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div class="row border">
+    <div class="row m-2 mt-4">
+        <h2 class="col-md-4">Country</h2>
+        <div class="col-md-4">
+            @if(ViewBag.ErrorMassege != null)
+            {
+                <span>@ViewBag.ErrorMassege</span>
+            }
+            @if(ViewBag.Massege != null)
+            {
+                <span>@ViewBag.Massege</span>
+            }
+        </div>
+        <div class="col-md-4 text-end">
+            <a class="btn btn-danger" asp-controller="Country" asp-action="Create">Add Country</a>
+        </div>
+    </div>
+    <div class="row m-2">
+        <table class="table table-hover">
+            <thead class="bg-dark text-light">
+                <th>Id</th>
+                <th>Name</th>
+                <th>Code</th>
+                <th>Creation Date</th>
+                <th class="text-center">Action</th>
+            </thead>
+            <tbody>
+                @foreach (var country in @Model)
+                {
+                    <tr>
+                        <td>@country.CountryId</td>
+                        <td>@country.CountryName</td>
+                        <td>@country.CountryCode</td>
+                        <td>@country.CreationDate</td>
+                        <td class="text-center">
+                            <a class="btn btn-success" asp-controller="Country" asp-action="Update" asp-route-Id="@country.CountryId">Edit</a>
+                            <a class="btn btn-danger" asp-controller="Country" asp-action="Delete" asp-route-Id="@country.CountryId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
