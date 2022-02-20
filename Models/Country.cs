@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Addressbook.Models
 {
@@ -12,7 +13,9 @@ namespace Addressbook.Models
         }
 
         public int CountryId { get; set; }
+        [Required(ErrorMessage = "Please Enter Country Name")]
         public string? CountryName { get; set; }
+        [Required(ErrorMessage = "Please Enter Country Code")]
         public string CountryCode { get; set; } = null!;
         public DateTime? CreationDate { get; set; }
 

@@ -4,7 +4,7 @@
 }
 <div>
     <div>
-        <h2>Add Country</h2>
+        <h2>Edit Country</h2>
     </div>
     <div>
         <form method="post">
@@ -28,8 +28,9 @@
         </form>
     </div>
 </div>
-@*@if(ViewBag.ErrorMassege != null)
-{
-    <div>@ViewBag.ErrorMassege</div>
-}*@
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial"></partial>
+}
+
 

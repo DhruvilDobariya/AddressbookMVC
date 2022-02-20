@@ -5,29 +5,26 @@
 
 <div class="row border">
     <div class="row m-2 mt-4">
-        <h2 class="col-md-4">Country</h2>
-        <div class="col-md-4">
-            @if(ViewBag.ErrorMassege != null)
-            {
-                <span>@ViewBag.ErrorMassege</span>
-            }
-            @if(ViewBag.Massege != null)
-            {
-                <span>@ViewBag.Massege</span>
-            }
-        </div>
-        <div class="col-md-4 text-end">
-            <a class="btn btn-danger" asp-controller="Country" asp-action="Create">Add Country</a>
+        <h2 class="col-md-6">
+            <i class="fa-solid fa-earth-americas"></i>
+            Country
+        </h2>
+        <div class="col-md-6 text-end">
+            <a class="btn btn-danger" asp-controller="Country" asp-action="Create">
+                <i class="fa-solid fa-plus"></i>
+                Add Country
+            </a>
         </div>
     </div>
     <div class="row m-2">
         <table class="table table-hover">
-            <thead class="bg-dark text-light">
+            <thead class="header2 text-light">
                 <th>Id</th>
                 <th>Name</th>
                 <th>Code</th>
                 <th>Creation Date</th>
-                <th class="text-center">Action</th>
+                <th class="text-center">Edit</th>
+                <th class="text-center">Delete</th>
             </thead>
             <tbody>
                 @foreach (var country in @Model)
@@ -38,8 +35,14 @@
                         <td>@country.CountryCode</td>
                         <td>@country.CreationDate</td>
                         <td class="text-center">
-                            <a class="btn btn-success" asp-controller="Country" asp-action="Update" asp-route-Id="@country.CountryId">Edit</a>
-                            <a class="btn btn-danger" asp-controller="Country" asp-action="Delete" asp-route-Id="@country.CountryId">Delete</a>
+                            <a class="btn btn-gradient" asp-controller="Country" asp-action="Update" asp-route-Id="@country.CountryId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-danger" asp-controller="Country" asp-action="Delete" asp-route-Id="@country.CountryId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
                         </td>
                     </tr>
                 }

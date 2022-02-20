@@ -32,6 +32,7 @@ namespace Addressbook.Controllers
                     _db.Add(country);
                     _db.SaveChanges();
                     ModelState.Clear();
+                    TempData["Success"] = "Country added successfully.";
                     return View();
                 }
                 return View(country);
@@ -40,11 +41,11 @@ namespace Addressbook.Controllers
             {
                 if(ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_Country'."))
                 {
-                    ViewBag.ErrorMassege = "Country already exist.";
+                    TempData["Error"] = "Country already exist.";
                 }
                 else
                 {
-                    ViewBag.ErrorMassege = ex.Message;
+                    TempData["Error"] = ex.Message;
                 }
                 return View();
             }
@@ -72,6 +73,7 @@ namespace Addressbook.Controllers
             {
                 _db.Update(country);
                 _db.SaveChanges();
+                TempData["Success"] = "Country updated successfully";
                 return RedirectToAction("Index");
             }
             return View(country);
@@ -92,16 +94,16 @@ namespace Addressbook.Controllers
                 }
                 _db.Remove(country);
                 _db.SaveChanges();
-                ViewBag.Massege = "Country deleted successfully.";
+                TempData["Success"] = "Country deleted successfully.";
                 return RedirectToAction("Index");
             }
             catch(Exception ex)
             {
-                if(ex.Message.Contains("The DELETE statement conflicted with the REFERENCE constraint 'FK_State_Country'."))
+                if (ex.ToString().Contains("FK_State_Country")) ;
                 {
-                    ViewBag.ErrorMassege = "This country have few states, so if you want to delete this country then please delete these state and then you can able to delete this country.";
+                    TempData["Error"] = "This country have few states, so if you want to delete this country then please delete these state and then you can able to delete this country.";
                 }
-                ViewBag.ErrorMassege = ex.Message;
+                TempData["Error"] = ex.Message;
                 return RedirectToAction("Index");
             }
         }
