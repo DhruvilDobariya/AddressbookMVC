@@ -14,7 +14,7 @@ namespace Addressbook.Controllers
         }
         public IActionResult Index()
         {
-            try 
+            try
             {
                 var query = from State in _db.States
                             join Country in _db.Countries on State.CountryId equals Country.CountryId
@@ -29,34 +29,155 @@ namespace Addressbook.Controllers
                             };
                 return View(query);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 TempData["Error"] = ex.Message;
                 return View();
             }
         }
 
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             try
             {
-                var countries = await _db.Countries.ToListAsync();
-                var countryList = new List<SelectListItem>()
-                {
-                    new SelectListItem(){Text = "Please Select Country", Value = "-1", Selected = true, Disabled = true}
-                };
-                foreach (var country in countries)
-                {
-                    countryList.Add(new SelectListItem() { Text = country.CountryName, Value = country.CountryId.ToString() });
-                }
-
-                ViewBag.Countries = countryList;
+                ViewBag.Countries = GetCountryList();
                 return View();
             }
             catch (Exception ex)
             {
                 TempData["Error"] = ex.Message;
+                ViewBag.Countries = GetCountryList();
                 return View();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(State state)
+        {
+            try
+            {
+                if(state == null)
+                {
+                    return View(state);
+                }
+                await _db.AddAsync(state);
+                await _db.SaveChangesAsync();
+                ModelState.Clear();
+                ViewBag.Countries = GetCountryList();
+                TempData["Success"] = "State added successfully";
+                return View();
+            }
+            catch(Exception ex)
+            {
+                if (ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_State'."))
+                {
+                    TempData["Error"] = "State already exist.";
+                }
+                else
+                {
+                    TempData["Error"] = ex.Message;
+                }
+                ViewBag.Countries = GetCountryList();
+                return View(state);
+            }
+        }
+
+        public async Task<IActionResult> Update(int Id)
+        {
+            try
+            {
+                if(Id == 0)
+                {
+                    return NotFound("State Not Found");
+                }
+                var state = await _db.States.FindAsync(Id);
+                ViewBag.Countries = GetCountryList();
+                return View(state);
+            }  
+            catch(Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        //[ActionName("Update")]
+        //[Route("State/Update/{id:int}")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Update(State state)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _db.Update(state);
+                    await _db.SaveChangesAsync();
+                    TempData["Success"] = "State updated successfully";
+                    return RedirectToAction("Index");
+                }
+                ViewBag.Countries = GetCountryList();
+                return View(state);
+            }
+            catch (Exception ex)
+            {
+                if (ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_State'."))
+                {
+                    TempData["Error"] = "State already exist.";
+                }
+                else
+                {
+                    TempData["Error"] = ex.Message;
+                }
+                ViewBag.Countries = GetCountryList();
+                return View(state);
+            }
+        }
+
+        public async Task<IActionResult> Delete(int Id)
+        {
+            try
+            {
+                if(Id == 0)
+                {
+                    return NotFound("State Not Found");
+                }
+                var state = await _db.States.FindAsync(Id);
+                if(state == null)
+                {
+                    return NotFound("State Not Found");
+                }
+                _db.Remove(state);
+                await _db.SaveChangesAsync();
+                TempData["Success"] = "State deleted successfully";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Index");
+            }
+        }
+        private List<SelectListItem> GetCountryList()
+        {
+            var countryList = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text = "Please Select Country", Value = "-1", Selected = true, Disabled = true}
+            };
+            try
+            {
+                var countries = _db.Countries.ToList();
+                foreach (var country in countries)
+                {
+                    countryList.Add(new SelectListItem() { Text = country.CountryName, Value = country.CountryId.ToString() });
+                }
+                return countryList;
+            }
+            catch(Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+                return countryList;
             }
         }
     }

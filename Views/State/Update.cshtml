@@ -1,14 +1,18 @@
 ﻿@model State
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Update";
 }
 
 <div class="border p-4">
     <div>
-        <h2>Add State</h2>
+        <h2>Edit State</h2>
     </div>
     <div>
         <form method="post">
+            <div>
+                <input type="text" asp-for="StateId" hidden>
+                <input type="text" asp-for="CreationDate" hidden>
+            </div>
             <div class="mt-2">
                 <label class="form-label" asp-for="StateName"></label>
                 <input type="text" class="form-control" asp-for="StateName" />
@@ -22,10 +26,9 @@
             <div class="mt-2">
                 <label class="form-label" asp-for="CountryId"></label>
                 <select class="form-select" asp-for="CountryId" asp-items="@ViewBag.Countries">
-
                 </select>
             </div>
-             <div class="mt-3">
+            <div class="mt-3">
                 <button class="btn btn-gradient" type="submit">Submit</button>
                 <a class="btn btn-danger" type="button" asp-controller="State" asp-action="Index">Back</a>
             </div>
@@ -34,26 +37,5 @@
 </div>
 
 @section Scripts{
-    <partial name="_ValidationScriptsPartial"></partial>
+<partial name="_ValidationScriptsPartial"></partial>
 }
-
-@*<div class="border p-4">
-    <div>
-        <h2>
-            Add State
-        </h2>
-    </div>
-    <div>
-        <form method="post">
-            <div class="mt-2">
-                <label class="form-label"></label>
-                <input type="text" class="form-control" />
-                <span class="text-danger"></span>
-            </div>
-             <div class="mt-3">
-                <button class="btn btn-gradient" type="submit">Submit</button>
-                <a class="btn btn-danger" type="button">Back</a>
-            </div>
-        </form>
-    </div>
-</div>*@

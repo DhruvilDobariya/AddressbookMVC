@@ -54,30 +54,53 @@ namespace Addressbook.Controllers
 
         public async Task<IActionResult> Update(int Id)
         {
-            if(Id == 0)
+            try
             {
-                return NotFound("Country Not Found.");
+                if (Id == 0)
+                {
+                    return NotFound("Country Not Found.");
+                }
+                var country = await _db.Countries.FindAsync(Id);
+                if (country == null)
+                {
+                    return NotFound("Country Not Found");
+                }
+                return View(country);
             }
-            var country = await _db.Countries.FindAsync(Id);
-            if(country == null)
+            catch(Exception ex)
             {
-                return NotFound("Country Not Found");
+                TempData["Error"] = ex.Message;
+                return RedirectToAction("Index");
             }
-            return View(country);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(Country country)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _db.Update(country);
-                await _db.SaveChangesAsync();
-                TempData["Success"] = "Country updated successfully";
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    _db.Update(country);
+                    await _db.SaveChangesAsync();
+                    TempData["Success"] = "Country updated successfully";
+                    return RedirectToAction("Index");
+                }
+                return View(country);
             }
-            return View(country);
+            catch(Exception ex)
+            {
+                if(ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_Country'."))
+                {
+                    TempData["Error"] = "Country already exist.";
+                }
+                else
+                {
+                    TempData["Error"] = ex.Message;
+                }
+                return View();
+            }
         }
 
         public async Task<IActionResult> Delete(int Id)
