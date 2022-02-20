@@ -10,6 +10,13 @@ switch (window.location.pathname.split("/")[1]) {
     case "Country":
         document.getElementById("nav-items").children[1].children[0].classList.add("active");
         break;
+    case "State":
+        document.getElementById("nav-items").children[2].children[0].classList.add("active");
+        break;
     default:
         document.getElementById("nav-items").children[0].children[0].classList.add("active");
 }
+
+$(document).ready(function () {
+    $('#table').DataTable();
+});

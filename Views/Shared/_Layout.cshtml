@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - Addressbook</title>
     <link rel="stylesheet" href="~/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/fortawesome/fontawesome-free/css/all.min.css" />
+    <link rel="stylesheet" href="~/datatable/dataTables.bootstrap5.min.css"/>
     <link rel="stylesheet" href="~/toastr/build/toastr.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Addressbook.styles.css" asp-append-version="true" />
@@ -14,7 +15,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark header border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Addressbook</a>
+                <a class="navbar-brand mx-5" asp-area="" asp-controller="Home" asp-action="Index">Addressbook</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -26,6 +27,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Country" asp-action="Index">Country</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="State" asp-action="Index">State</a>
                         </li>
                     </ul>
                 </div>
@@ -57,6 +61,8 @@
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/datatable/dataTables.bootstrap5.min.js"></script>
     <script src="~/fortawesome/fontawesome-free/js/all.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

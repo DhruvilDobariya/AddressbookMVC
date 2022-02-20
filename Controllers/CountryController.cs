@@ -1,5 +1,6 @@
 ﻿using Addressbook.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Addressbook.Controllers
 {
@@ -10,9 +11,9 @@ namespace Addressbook.Controllers
         {
             _db = db;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var countries = _db.Countries.ToList();
+            var countries = await _db.Countries.ToListAsync();
             return View(countries);
         }
 
@@ -23,14 +24,14 @@ namespace Addressbook.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Country country)
+        public async Task<IActionResult> Create(Country country)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _db.Add(country);
-                    _db.SaveChanges();
+                    await _db.AddAsync(country);
+                    await _db.SaveChangesAsync();
                     ModelState.Clear();
                     TempData["Success"] = "Country added successfully.";
                     return View();
@@ -51,13 +52,13 @@ namespace Addressbook.Controllers
             }
         }
 
-        public IActionResult Update(int Id)
+        public async Task<IActionResult> Update(int Id)
         {
             if(Id == 0)
             {
                 return NotFound("Country Not Found.");
             }
-            var country = _db.Countries.Find(Id);
+            var country = await _db.Countries.FindAsync(Id);
             if(country == null)
             {
                 return NotFound("Country Not Found");
@@ -67,19 +68,19 @@ namespace Addressbook.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Update(Country country)
+        public async Task<IActionResult> Update(Country country)
         {
             if (ModelState.IsValid)
             {
                 _db.Update(country);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 TempData["Success"] = "Country updated successfully";
                 return RedirectToAction("Index");
             }
             return View(country);
         }
 
-        public IActionResult Delete(int Id)
+        public async Task<IActionResult> Delete(int Id)
         {
             try
             {
@@ -87,13 +88,13 @@ namespace Addressbook.Controllers
                 {
                     return NotFound("Country Not Found.");
                 }
-                var country = _db.Countries.Find(Id);
+                var country = await _db.Countries.FindAsync(Id);
                 if (country == null)
                 {
                     return NotFound("Country Not Found.");
                 }
                 _db.Remove(country);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 TempData["Success"] = "Country deleted successfully.";
                 return RedirectToAction("Index");
             }

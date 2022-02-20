@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Country>
+﻿@model IEnumerable<State>
 @{
     ViewData["Title"] = "Index";
 }
@@ -6,13 +6,13 @@
 <div class="row border">
     <div class="row m-2 mt-4">
         <h2 class="col-md-6">
-            <i class="fa-solid fa-earth-americas"></i>
-            Country
+            <i class="fa-solid fa-flag-checkered"></i>
+            State
         </h2>
         <div class="col-md-6 text-end">
-            <a class="btn btn-danger" asp-controller="Country" asp-action="Create">
+            <a class="btn btn-danger" asp-controller="State" asp-action="Create">
                 <i class="fa-solid fa-plus"></i>
-                Add Country
+                Add State
             </a>
         </div>
     </div>
@@ -22,25 +22,27 @@
                 <th>Id</th>
                 <th>Name</th>
                 <th>Code</th>
+                <th>Country</th>
                 <th>Creation Date</th>
                 <th class="text-center">Edit</th>
                 <th class="text-center">Delete</th>
             </thead>
             <tbody>
-                @foreach (var country in @Model)
+                @foreach (var state in @Model)
                 {
                     <tr>
-                        <td>@country.CountryId</td>
-                        <td>@country.CountryName</td>
-                        <td>@country.CountryCode</td>
-                        <td>@country.CreationDate</td>
+                        <td>@state.StateId</td>
+                        <td>@state.StateName</td>
+                        <td>@state.StateCode</td>
+                        <td>@state.Country.CountryName</td>
+                        <td>@state.CreationDate</td>
                         <td class="text-center">
-                            <a class="btn btn-gradient" asp-controller="Country" asp-action="Update" asp-route-Id="@country.CountryId">
+                            <a class="btn btn-gradient" asp-controller="Country" asp-action="Update" asp-route-Id="@state.StateId">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
                         </td>
                         <td class="text-center">
-                            <a class="btn btn-danger" asp-controller="Country" asp-action="Delete" asp-route-Id="@country.CountryId">
+                            <a class="btn btn-danger" asp-controller="Country" asp-action="Delete" asp-route-Id="@state.StateId">
                                 <i class="fa-solid fa-trash-can"></i>
                             </a>
                         </td>
