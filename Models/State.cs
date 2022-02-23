@@ -27,7 +27,7 @@ namespace Addressbook.Models
         public string? StateCode { get; set; }
         public DateTime? CreationDate { get; set; }
 
-        public virtual Country Country { get; set; } = null!;
+        public virtual Country? Country { get; set; }
         public virtual ICollection<City> Cities { get; set; }
         public virtual ICollection<Contact> Contacts { get; set; }
     }

@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Addressbook</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon.png">
     <link rel="stylesheet" href="~/bootstrap/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/fortawesome/fontawesome-free/css/all.min.css" />
     <link rel="stylesheet" href="~/datatable/dataTables.bootstrap5.min.css"/>
@@ -22,14 +23,19 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1" id="nav-items">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        <li class="nav-item mx-1">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fa-solid fa-house-chimney"></i>
+                            </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item mx-1">
                             <a class="nav-link" asp-area="" asp-controller="Country" asp-action="Index">Country</a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item mx-1">
                             <a class="nav-link" asp-area="" asp-controller="State" asp-action="Index">State</a>
+                        </li>
+                         <li class="nav-item mx-1">
+                            <a class="nav-link" asp-area="" asp-controller="ContactCategory" asp-action="Index">Contact Category</a>
                         </li>
                     </ul>
                 </div>
