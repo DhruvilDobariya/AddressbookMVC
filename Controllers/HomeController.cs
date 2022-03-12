@@ -13,6 +13,7 @@ namespace Addressbook.Controllers
             _logger = logger;
         }
 
+        [Route("~/Home")]
         public IActionResult Index()
         {
             return View();

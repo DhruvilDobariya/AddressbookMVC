@@ -13,8 +13,11 @@ switch (window.location.pathname.split("/")[1]) {
     case "State":
         document.getElementById("nav-items").children[2].children[0].classList.add("active");
         break;
-    case "ContactCategory":
+    case "City":
         document.getElementById("nav-items").children[3].children[0].classList.add("active");
+        break;
+    case "ContactCategory":
+        document.getElementById("nav-items").children[4].children[0].classList.add("active");
         break;
     default:
         document.getElementById("nav-items").children[0].children[0].classList.add("active");

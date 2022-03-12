@@ -12,6 +12,8 @@ namespace Addressbook.Controllers
         {
             _db = db;
         }
+
+        [Route("~/State/List")]
         public IActionResult Index()
         {
             try
