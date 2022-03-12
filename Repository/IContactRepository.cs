@@ -1,6 +1,9 @@
-﻿namespace Addressbook.Repository
+﻿using Addressbook.Models;
+
+namespace Addressbook.Repository
 {
-    public class IContactRepository
+    public interface IContactRepository
     {
+        Task<IEnumerable<Contact>> GetAllAsync();
     }
 }
