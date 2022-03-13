@@ -1,4 +1,6 @@
-﻿using Addressbook.Models;
+﻿using Addressbook.GenericRepository;
+using Addressbook.Models;
+using Addressbook.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,14 +8,18 @@ namespace Addressbook.Controllers
 {
     public class CountryController : Controller
     {
-        private readonly AddressBookContext _db;
-        public CountryController(AddressBookContext db)
+        private readonly ICountryRepository _Repository;
+        private readonly ICRUDRepository<Country> _CRUDRepository;
+        public CountryController(ICountryRepository Repository, ICRUDRepository<Country> CRUDRepository)
         {
-            _db = db;
+            _Repository = Repository;
+            _CRUDRepository = CRUDRepository;
         }
+
+        //[Route("[controller]/List")]
         public async Task<IActionResult> Index()
         {
-            var countries = await _db.Countries.ToListAsync();
+            var countries = await _Repository.GetAllAsync();
             return View(countries);
         }
 
@@ -26,110 +32,65 @@ namespace Addressbook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Country country)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                bool flag = await _CRUDRepository.InsertAsync(country);
+                if (flag)
                 {
-                    await _db.AddAsync(country);
-                    await _db.SaveChangesAsync();
                     ModelState.Clear();
                     TempData["Success"] = "Country added successfully.";
                     return View();
                 }
-                return View(country);
             }
-            catch (Exception ex)
-            {
-                if(ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_Country'."))
-                {
-                    TempData["Error"] = "Country already exist.";
-                }
-                else
-                {
-                    TempData["Error"] = ex.Message;
-                }
-                return View();
-            }
+            TempData["Error"] = _CRUDRepository.Message;
+            return View(country);
         }
 
         public async Task<IActionResult> Update(int Id)
         {
-            try
+            if (Id == 0)
             {
-                if (Id == 0)
-                {
-                    return NotFound("Country Not Found.");
-                }
-                var country = await _db.Countries.FindAsync(Id);
-                if (country == null)
-                {
-                    return NotFound("Country Not Found");
-                }
-                return View(country);
+                return NotFound("Country Not Found.");
             }
-            catch(Exception ex)
+            var country = await _CRUDRepository.GetByIdAsync(Id);
+            if (country == null)
             {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
+                return NotFound("Country Not Found");
             }
+            return View(country);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(Country country)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                bool flag = await _CRUDRepository.UpdateAsync(country);
+                if (flag)
                 {
-                    _db.Update(country);
-                    await _db.SaveChangesAsync();
                     TempData["Success"] = "Country updated successfully";
                     return RedirectToAction("Index");
                 }
-                return View(country);
+                TempData["Error"] = _CRUDRepository.Message;
             }
-            catch(Exception ex)
-            {
-                if(ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_Country'."))
-                {
-                    TempData["Error"] = "Country already exist.";
-                }
-                else
-                {
-                    TempData["Error"] = ex.Message;
-                }
-                return View();
-            }
+            return View(country);
         }
 
         public async Task<IActionResult> Delete(int Id)
         {
-            try
+            if (Id == 0)
             {
-                if (Id == 0)
-                {
-                    return NotFound("Country Not Found.");
-                }
-                var country = await _db.Countries.FindAsync(Id);
-                if (country == null)
-                {
-                    return NotFound("Country Not Found.");
-                }
-                _db.Remove(country);
-                await _db.SaveChangesAsync();
+                return NotFound("Country Not Found.");
+            }
+            bool flag = await _CRUDRepository.DeleteAsync(Id);
+            if (flag)
+            {
                 TempData["Success"] = "Country deleted successfully.";
                 return RedirectToAction("Index");
             }
-            catch(Exception ex)
-            {
-                if (ex.ToString().Contains("FK_State_Country")) ;
-                {
-                    TempData["Error"] = "This country have few states, so if you want to delete this country then please delete these state and then you can able to delete this country.";
-                }
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
-            }
+            TempData["Error"] = _CRUDRepository.Message;
+            return RedirectToAction("Index");
         }
     }
 }

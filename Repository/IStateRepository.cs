@@ -2,7 +2,7 @@
 
 namespace Addressbook.Repository
 {
-    public interface IStateRepsitory
+    public interface IStateRepository
     {
         Task<IEnumerable<State>> GetAllAsync();
     }

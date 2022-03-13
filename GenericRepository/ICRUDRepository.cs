@@ -2,6 +2,7 @@
 {
     public interface ICRUDRepository<T> where T : class
     {
+        string Message { get; set; }
         Task<T> GetByIdAsync(int id);
         Task<bool> InsertAsync(T entity);
         Task<bool> UpdateAsync(T entity);

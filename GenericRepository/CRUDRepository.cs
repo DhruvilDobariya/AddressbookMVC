@@ -8,7 +8,7 @@ namespace Addressbook.GenericRepository
         private readonly AddressBookContext _db;
         private readonly DbSet<T> _entities;
 
-        private string _Message { get; set; }
+        public string Message { get; set; }
 
         public CRUDRepository(AddressBookContext db)
         {
@@ -24,14 +24,14 @@ namespace Addressbook.GenericRepository
                 var entity = await _entities.FindAsync(id); // For Ex : If we have 'Country' then it becomes '_db.Countries.FindAsync(id)'
                 if (entity == null)
                 {
-                    _Message = "Not Found";
+                    Message = "Not Found";
                     return entity;
                 }
                 return entity;
             }
             catch(Exception ex)
             {
-                _Message = ex.Message;
+                Message = ex.Message;
                 return null;
             }
         }
@@ -46,7 +46,7 @@ namespace Addressbook.GenericRepository
             }
             catch (Exception ex)
             {
-                _Message = ex.Message;
+                Message = ex.Message;
                 return false;
             }
         }
@@ -61,7 +61,7 @@ namespace Addressbook.GenericRepository
             }
             catch(Exception ex)
             {
-                _Message = ex.Message;
+                Message = ex.Message;
                 return false;
             }
         }
@@ -70,10 +70,10 @@ namespace Addressbook.GenericRepository
         {
             try
             {
-                var entity = _entities.FindAsync(id);
+                var entity = await _entities.FindAsync(id);
                 if(entity == null)
                 {
-                    _Message = "Not Found";
+                    Message = "Not Found";
                     return false;
                 }
                 _db.Remove(entity);
@@ -82,7 +82,7 @@ namespace Addressbook.GenericRepository
             }
             catch(Exception ex)
             {
-                _Message = ex.Message;
+                Message = ex.Message;
                 return false;
             }
         }
