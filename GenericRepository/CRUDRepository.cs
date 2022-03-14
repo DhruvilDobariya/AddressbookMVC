@@ -46,7 +46,12 @@ namespace Addressbook.GenericRepository
             }
             catch (Exception ex)
             {
-                Message = ex.Message;
+                if (ex.ToString().Contains("Violation of UNIQUE KEY constraint"))
+                {
+                    Message = "This item already exist";
+                    return false;
+                }
+                Message = ex.ToString();
                 return false;
             }
         }
@@ -61,7 +66,12 @@ namespace Addressbook.GenericRepository
             }
             catch(Exception ex)
             {
-                Message = ex.Message;
+                if(ex.ToString().Contains("Violation of UNIQUE KEY constraint"))
+                {
+                    Message = "This item already exist";
+                    return false;
+                }
+                Message = ex.ToString();
                 return false;
             }
         }
@@ -82,8 +92,14 @@ namespace Addressbook.GenericRepository
             }
             catch(Exception ex)
             {
-                Message = ex.Message;
+                if(ex.ToString().Contains("The DELETE statement conflicted with the REFERENCE constraint"))
+                {
+                    Message = "This item contain some record, so first you must delete these record, if you want to delete this item.";
+                    return false;
+                }
+                Message = ex.ToString();
                 return false;
+
             }
         }
 

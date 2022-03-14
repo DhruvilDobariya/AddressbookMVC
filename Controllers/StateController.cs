@@ -9,7 +9,6 @@ namespace Addressbook.Controllers
 {
     public class StateController : Controller
     {
-        private readonly AddressBookContext _db;
         private readonly IStateRepository _Repository; // Here we always use interface
         private readonly ICRUDRepository<State> _CRUDRepository;
         private readonly ICountryRepository _CountryRepository;
@@ -24,31 +23,14 @@ namespace Addressbook.Controllers
         [Route("~/State/List")]
         public IActionResult Index()
         {
-            try
-            {
-                var states = _Repository.GetAllWithJoin();
-                return View(states);
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return View();
-            }
+            var states = _Repository.GetAllWithJoin();
+            return View(states);
         }
 
         public IActionResult Create()
         {
-            try
-            {
-                ViewBag.Countries = GetCountryList();
-                return View();
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                ViewBag.Countries = GetCountryList();
-                return View();
-            }
+            ViewBag.Countries = GetCountryList();
+            return View();
         }
 
         [HttpPost]
