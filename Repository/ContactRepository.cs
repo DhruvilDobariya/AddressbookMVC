@@ -4,7 +4,9 @@ namespace Addressbook.Repository
 {
     public class ContactRepository : IContactRepository
     {
-        public Task<IEnumerable<Contact>> GetAllAsync()
+        public string Message { get; set; }
+
+        public IEnumerable<Contact> GetAllWithJoin()
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,6 @@
-﻿using Addressbook.Models;
+﻿using Addressbook.GenericRepository;
+using Addressbook.Models;
+using Addressbook.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +10,15 @@ namespace Addressbook.Controllers
     public class StateController : Controller
     {
         private readonly AddressBookContext _db;
-        public StateController(AddressBookContext db)
+        private readonly IStateRepository _Repository; // Here we always use interface
+        private readonly ICRUDRepository<State> _CRUDRepository;
+        private readonly ICountryRepository _CountryRepository;
+
+        public StateController(IStateRepository Repository, ICRUDRepository<State> CRUDRepository, ICountryRepository CountryRepository)
         {
-            _db = db;
+            _Repository = Repository;
+            _CRUDRepository = CRUDRepository;
+            _CountryRepository = CountryRepository;
         }
 
         [Route("~/State/List")]
@@ -18,18 +26,8 @@ namespace Addressbook.Controllers
         {
             try
             {
-                var query = from State in _db.States
-                            join Country in _db.Countries on State.CountryId equals Country.CountryId
-                            select new State
-                            {
-                                StateId = State.StateId,
-                                CountryId = Country.CountryId,
-                                StateCode = State.StateCode,
-                                StateName = State.StateName,
-                                CreationDate = State.CreationDate,
-                                Country = Country,
-                            };
-                return View(query);
+                var states = _Repository.GetAllWithJoin();
+                return View(states);
             }
             catch (Exception ex)
             {
@@ -57,51 +55,36 @@ namespace Addressbook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(State state)
         {
-            try
+            if (state == null)
             {
-                if(state == null)
-                {
-                    return View(state);
-                }
-                await _db.AddAsync(state);
-                await _db.SaveChangesAsync();
-                ModelState.Clear();
-                ViewBag.Countries = GetCountryList();
-                TempData["Success"] = "State added successfully";
-                return View();
-            }
-            catch(Exception ex)
-            {
-                if (ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_State'."))
-                {
-                    TempData["Error"] = "State already exist.";
-                }
-                else
-                {
-                    TempData["Error"] = ex.Message;
-                }
-                ViewBag.Countries = GetCountryList();
                 return View(state);
             }
+            if(await _CRUDRepository.InsertAsync(state))
+            {
+                TempData["Success"] = "State added successfully";
+                ModelState.Clear();
+                return View();
+            }
+            TempData["Error"] = _CRUDRepository.Message;
+            ViewBag.Countries = GetCountryList();
+            return View(state);
         }
 
         public async Task<IActionResult> Update(int Id)
         {
-            try
+
+            if (Id == 0)
             {
-                if(Id == 0)
-                {
-                    return NotFound("State Not Found");
-                }
-                var state = await _db.States.FindAsync(Id);
-                ViewBag.Countries = GetCountryList();
-                return View(state);
-            }  
-            catch(Exception ex)
+                return NotFound("State Not Found");
+            }
+            State state = await _CRUDRepository.GetByIdAsync(Id);
+            if(state == null)
             {
-                TempData["Error"] = ex.Message;
+                TempData["Error"] = _CRUDRepository.Message;
                 return RedirectToAction("Index");
             }
+            ViewBag.Countries = GetCountryList();
+            return View(state);
         }
 
         //[ActionName("Update")]
@@ -110,56 +93,33 @@ namespace Addressbook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(State state)
         {
-            try
+
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
+                if(await _CRUDRepository.UpdateAsync(state))
                 {
-                    _db.Update(state);
-                    await _db.SaveChangesAsync();
                     TempData["Success"] = "State updated successfully";
                     return RedirectToAction("Index");
                 }
-                ViewBag.Countries = GetCountryList();
-                return View(state);
             }
-            catch (Exception ex)
-            {
-                if (ex.ToString().Contains("Violation of UNIQUE KEY constraint 'IX_State'."))
-                {
-                    TempData["Error"] = "State already exist.";
-                }
-                else
-                {
-                    TempData["Error"] = ex.Message;
-                }
-                ViewBag.Countries = GetCountryList();
-                return View(state);
-            }
+            TempData["Error"] = _CRUDRepository.Message;
+            ViewBag.Countries = GetCountryList();
+            return View(state);
         }
 
         public async Task<IActionResult> Delete(int Id)
         {
-            try
+            if (Id == 0)
             {
-                if(Id == 0)
-                {
-                    return NotFound("State Not Found");
-                }
-                var state = await _db.States.FindAsync(Id);
-                if(state == null)
-                {
-                    return NotFound("State Not Found");
-                }
-                _db.Remove(state);
-                await _db.SaveChangesAsync();
+                return NotFound("State Not Found");
+            }
+            if(await _CRUDRepository.DeleteAsync(Id))
+            {
                 TempData["Success"] = "State deleted successfully";
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
-            }
+            TempData["Error"] = _CRUDRepository.Message;
+            return RedirectToAction("Index");
         }
         private List<SelectListItem> GetCountryList()
         {
@@ -169,7 +129,7 @@ namespace Addressbook.Controllers
             };
             try
             {
-                var countries = _db.Countries.ToList();
+                var countries = _CountryRepository.GetAll();
                 foreach (var country in countries)
                 {
                     countryList.Add(new SelectListItem() { Text = country.CountryName, Value = country.CountryId.ToString() });

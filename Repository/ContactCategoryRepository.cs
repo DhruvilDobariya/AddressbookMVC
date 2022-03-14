@@ -4,7 +4,9 @@ namespace Addressbook.Repository
 {
     public class ContactCategoryRepository : IContactCategoryRepository
     {
-        public Task<IEnumerable<ContactCategory>> GetAllAsync()
+        public string Message { get; set; }
+
+        public IEnumerable<ContactCategory> GetAllWithJoin()
         {
             throw new NotImplementedException();
         }

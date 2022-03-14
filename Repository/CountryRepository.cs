@@ -7,28 +7,24 @@ namespace Addressbook.Repository
     public class CountryRepository : ICountryRepository
     {
         private readonly AddressBookContext _db;
-        public string _Message { get; set; }
+        public string Message { get; set; }
 
         public CountryRepository(AddressBookContext db)
         {
             _db = db;
         }
 
-        public async Task<IEnumerable<Country>> GetAllAsync()
+        public IEnumerable<Country> GetAll()
         {
             List<Country> countries = new List<Country>();
             try
             {
-                countries = await _db.Countries.ToListAsync();
-                if(countries.Count == 0)
-                {
-                    _Message = "No Record";
-                }
+                countries = _db.Countries.ToList();
                 return countries;
             }
             catch (Exception ex)
             {
-                _Message = ex.Message;
+                Message = ex.Message;
                 return countries;
             }
         }

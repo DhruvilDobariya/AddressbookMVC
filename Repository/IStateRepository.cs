@@ -4,6 +4,7 @@ namespace Addressbook.Repository
 {
     public interface IStateRepository
     {
-        Task<IEnumerable<State>> GetAllAsync();
+        string Message { get; set; }
+        IEnumerable<State> GetAllWithJoin();
     }
 }

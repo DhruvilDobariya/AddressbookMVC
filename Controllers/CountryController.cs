@@ -19,7 +19,7 @@ namespace Addressbook.Controllers
         //[Route("[controller]/List")]
         public async Task<IActionResult> Index()
         {
-            var countries = await _Repository.GetAllAsync();
+            var countries = await _CRUDRepository.GetAllAsync();
             return View(countries);
         }
 

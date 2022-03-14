@@ -4,6 +4,7 @@ namespace Addressbook.Repository
 {
     public interface IContactCategoryRepository
     {
-        Task<IEnumerable<ContactCategory>> GetAllAsync();
+        string Message { get; set; }
+        IEnumerable<ContactCategory> GetAllWithJoin();
     }
 }

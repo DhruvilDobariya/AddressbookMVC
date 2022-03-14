@@ -5,6 +5,7 @@ namespace Addressbook.Repository
 {
     public interface ICountryRepository
     {
-        Task<IEnumerable<Country>> GetAllAsync();
+        string Message { get; set; }
+        IEnumerable<Country> GetAll();
     }
 }

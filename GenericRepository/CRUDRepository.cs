@@ -86,5 +86,20 @@ namespace Addressbook.GenericRepository
                 return false;
             }
         }
+
+        public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            List<T> entities = new List<T>();
+            try
+            {
+                entities = await _entities.ToListAsync();
+                return entities;
+            }
+            catch(Exception ex)
+            {
+                Message = ex.Message;
+                return entities;
+            }
+        }
     }
 }
