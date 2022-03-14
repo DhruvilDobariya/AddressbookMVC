@@ -46,12 +46,12 @@ namespace Addressbook.GenericRepository
             }
             catch (Exception ex)
             {
-                if (ex.ToString().Contains("Violation of UNIQUE KEY constraint"))
+                if (ex.ToString().Contains("Violation of UNIQUE KEY constraint") || ex.ToString().Contains("Cannot insert duplicate key row in object"))
                 {
                     Message = "This item already exist";
                     return false;
                 }
-                Message = ex.ToString();
+                Message = ex.Message;
                 return false;
             }
         }
@@ -66,12 +66,12 @@ namespace Addressbook.GenericRepository
             }
             catch(Exception ex)
             {
-                if(ex.ToString().Contains("Violation of UNIQUE KEY constraint"))
+                if(ex.ToString().Contains("Violation of UNIQUE KEY constraint") || ex.ToString().Contains("Cannot insert duplicate key row in object"))
                 {
                     Message = "This item already exist";
                     return false;
                 }
-                Message = ex.ToString();
+                Message = ex.Message;
                 return false;
             }
         }
@@ -97,7 +97,7 @@ namespace Addressbook.GenericRepository
                     Message = "This item contain some record, so first you must delete these record, if you want to delete this item.";
                     return false;
                 }
-                Message = ex.ToString();
+                Message = ex.Message;
                 return false;
 
             }

@@ -1,4 +1,6 @@
-﻿using Addressbook.Models;
+﻿using Addressbook.GenericRepository;
+using Addressbook.Models;
+using Addressbook.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,14 +8,16 @@ namespace Addressbook.Controllers
 {
     public class ContactCategoryController : Controller
     {
-        private readonly AddressBookContext _db;
-        public ContactCategoryController(AddressBookContext db)
+        private readonly IContactCategoryRepository _ContactCategoryRepository;
+        private readonly ICRUDRepository<ContactCategory> _CRUDRepository;
+        public ContactCategoryController(IContactCategoryRepository ContactCategoryRepository, ICRUDRepository<ContactCategory> CRUDRepository)
         {
-            _db = db;
+            _ContactCategoryRepository = ContactCategoryRepository;
+            _CRUDRepository = CRUDRepository;
         }
         public async Task<IActionResult> Index()
         {
-            return View(await _db.ContactCategories.ToListAsync());
+            return View(await _CRUDRepository.GetAllAsync());
         }
         public IActionResult Create()
         {
@@ -24,101 +28,62 @@ namespace Addressbook.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ContactCategory contactCategory)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
+                if(await _CRUDRepository.InsertAsync(contactCategory))
                 {
-                    return View(contactCategory);
+                    ModelState.Clear();
+                    TempData["Success"] = "Contact category added successfully";
+                    return View();
                 }
-                await _db.ContactCategories.AddAsync(contactCategory);
-                await _db.SaveChangesAsync();
-                ModelState.Clear();
-                TempData["Success"] = "Contact category added successfully";
-                return View();
             }
-            catch(Exception ex)
-            {
-                if (ex.ToString().Contains("Cannot insert duplicate key row in object 'dbo.ContactCategory' with unique index 'IX_ContactCategory'."))
-                {
-                    TempData["Error"] = "Contact category already exist.";
-                }
-                else
-                {
-                    TempData["Error"] = ex.Message;
-                }
-                return View();
-            }
+            TempData["Error"] = _CRUDRepository.Message;
+            return View(contactCategory);
         }
 
         public async Task<IActionResult> Update(int Id)
         {
-            try
+            if (Id == 0)
             {
-                if (Id == 0)
-                {
-                    return NotFound("Contact Category Not Found.");
-                }
-                var contactCategory = await _db.ContactCategories.FindAsync(Id);
-                if (contactCategory == null)
-                {
-                    return NotFound("Contact Category Not Found.");
-                }
-                return View(contactCategory);
+                return NotFound("Contact Category Not Found.");
             }
-            catch (Exception ex)
+            ContactCategory contactCategory = await _CRUDRepository.GetByIdAsync(Id);
+            if (contactCategory == null)
             {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
+                return NotFound("Contact Category Not Found.");
             }
+            return View(contactCategory);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(ContactCategory contactCategory)
         {
-            try
+            if (ModelState.IsValid)
             {
-                if (!ModelState.IsValid)
+                if(await _CRUDRepository.UpdateAsync(contactCategory))
                 {
-                    return View(contactCategory);
+                    TempData["Success"] = "Contact category updated successfully";
+                    return RedirectToAction("Index");
                 }
-                _db.Update(contactCategory);
-                await _db.SaveChangesAsync();
-                TempData["Success"] = "Contact category updated successfully";
-                return RedirectToAction("Index");
             }
-            catch(Exception ex)
-            {
-                if (ex.ToString().Contains("Cannot insert duplicate key row in object 'dbo.ContactCategory' with unique index 'IX_ContactCategory'."))
-                {
-                    TempData["Error"] = "Contact category already exist.";
-                }
-                else
-                {
-                    TempData["Error"] = ex.Message;
-                }
-                return View();
-            }
+            TempData["Error"] = _CRUDRepository.Message;
+            return View(contactCategory);
         }
 
         public async Task<IActionResult> Delete(int Id)
         {
-            try
+            if (Id == 0)
             {
-                if (Id == 0)
-                {
-                    return NotFound("Contact Category Not Found.");
-                }
-                var contactCategory = await _db.ContactCategories.FindAsync(Id);
-                _db.Remove(contactCategory);
-                await _db.SaveChangesAsync();
+                return NotFound("Contact Category Not Found.");
+            }
+            if(await _CRUDRepository.DeleteAsync(Id))
+            {
+                TempData["Success"] = "Contact category deleted successfully";
                 return RedirectToAction("Index");
             }
-            catch(Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                return RedirectToAction("Index");
-            }
+            TempData["Error"] = _CRUDRepository.Message;
+            return RedirectToAction("Index");
         } 
     }
 }
