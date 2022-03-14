@@ -1,6 +1,7 @@
 using Addressbook.GenericRepository;
 using Addressbook.Models;
 using Addressbook.Repository;
+using Addressbook.Service;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,8 @@ builder.Services.AddTransient<ICityRepository, CityRepository>();
 builder.Services.AddTransient<IContactCategoryRepository, ContactCategoryRepository>();
 builder.Services.AddTransient<IContactRepository, ContactRepository>();
 builder.Services.AddTransient(typeof(ICRUDRepository<>), typeof(CRUDRepository<>));
+
+builder.Services.AddTransient<IDropDownList, DropDownList>();
 
 /*
  * builder.Services.AddTransient<ICountryRepository, CountryRepository>();
