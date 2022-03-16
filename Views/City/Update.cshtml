@@ -1,16 +1,20 @@
 ﻿@model City
 @{
-    ViewData["Title"] = "Create - City";
+    ViewData["Title"] = "Update - City";
 }
 
 <div class="border p-4">
     <div>
         <h2>
-            Add City
+            Edit City
         </h2>
     </div>
     <div>
         <form method="post">
+            <div class="mt-2">
+                <input type="text" asp-for="CityId" hidden />
+                <input type="text" asp-for="CreationDate" hidden />
+            </div>
             <div class="mt-2">
                 <label class="form-label" asp-for="CityName"></label>
                 <input type="text" class="form-control" asp-for="CityName" />
