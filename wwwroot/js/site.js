@@ -19,6 +19,9 @@ switch (window.location.pathname.split("/")[1]) {
     case "ContactCategory":
         document.getElementById("nav-items").children[4].children[0].classList.add("active");
         break;
+    case "Contact":
+        document.getElementById("nav-items").children[5].children[0].classList.add("active");
+        break;
     default:
         document.getElementById("nav-items").children[0].children[0].classList.add("active");
 }
