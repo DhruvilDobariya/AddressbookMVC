@@ -76,3 +76,8 @@ table th, table td {
     overflow: auto;
     white-space: nowrap;
 }
+
+.scrollmanu {
+    overflow: auto;
+    white-space: nowrap;
+}

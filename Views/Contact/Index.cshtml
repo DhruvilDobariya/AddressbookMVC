@@ -1,7 +1,76 @@
-﻿
+﻿@model IEnumerable<Contact>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Index - Contact";
 }
 
-<h1>Index</h1>
-
+<div class="row border">
+    <div class="row m-2 mt-4">
+        <h2 class="col-md-6">
+            <i class="fa-solid fa-earth-americas"></i>
+            Contact
+        </h2>
+        <div class="col-md-6 text-end">
+            <a class="btn btn-danger" asp-controller="Country" asp-action="Create">
+                <i class="fa-solid fa-plus"></i>
+                Add Contact
+            </a>
+        </div>
+    </div>
+    <div class="row m-2 scrollmanu">
+        <table class="table table-hover table-responsive" id="table">
+            <thead class="header2 text-light">
+                <th>Id</th>
+                <th>Name</th>
+                <th>Contact Category</th>
+                <th>City</th>
+                <th>State</th>
+                <th>Country</th>
+                <th>Contact No</th>
+                <th>Whatsapp No</th>
+                <th>Date of Birth</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>Blood Group</th>
+                <th>Facebook Id</th>
+                <th>Linkedin Id</th>
+                <th>Address</th>
+                <th>Creation Date</th>
+                <th class="text-center">Edit</th>
+                <th class="text-center">Delete</th>
+            </thead>
+            <tbody>
+                @foreach (var contact in @Model)
+                {
+                    <tr>
+                        <td>@contact.ContactId</td>
+                        <td>@contact.ContactName</td>
+                        <td>@contact.ContactCategory.ContactCategoryName</td>
+                        <td>@contact.City.CityName</td>
+                        <td>@contact.State.StateName</td>
+                        <td>@contact.Country.CountryName</td>
+                        <td>@contact.ContactNo</td>
+                        <td>@contact.WhatsAppNo</td>
+                        <td>@contact.BirthDate</td>
+                        <td>@contact.Email</td>
+                        <td>@contact.Age</td>
+                        <td>@contact.BloodGroup</td>
+                        <td>@contact.FacebookId</td>
+                        <td>@contact.LinkedInId</td>
+                        <td>@contact.Address</td>
+                        <td>@contact.CreationDate</td>
+                        <td class="text-center">
+                            <a class="btn btn-gradient" asp-controller="Contact" asp-action="Update" asp-route-Id="@contact.ContactId">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                        </td>
+                        <td class="text-center">
+                            <a class="btn btn-danger" asp-controller="Contact" asp-action="Delete" asp-route-Id="@contact.ContactId">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
