@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Addressbook.Models
 {
+    [Index(nameof(CountryName), IsUnique = true)]
     public partial class Country
     {
         public Country()
